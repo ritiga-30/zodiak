@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ramalan Zodiak Harian</title>
+  <style>
+    body {
+      background-color: #B3E5FC;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh; /* Tinggi penuh layar */
+    }
+    .container, .form-container, .result-container {
+      background-color: #ffa9c7;
+      padding: 30px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .form-container, .result-container {
+      display: none;
+    }
+    input, select {
+      width: 60%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    .button {
+      background-color: white;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .box-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: nowrap;
+      margin-top: 30px;
+      gap: 15px;
+    }
+    .box {
+        width: 22%;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 0px;
+        color: #000;
+        box-sizing: border-box;
+    }
+    .box h3 {
+        margin-top: 0;
+        padding: 10px;
+        border-radius: 8px 8px 0 0;
+        color: #000;
+        text-align: center;
+    }
+
+    /* Warna seluruh kotak */
+    #boxUmum {
+        background-color: #B2EBF2;
+    }
+    
+    #boxCinta {
+        background-color: #FFCDD2;
+    }
+
+    #boxKeuangan {
+        background-color: #FFF9C4;
+    }
+
+    #boxKesehatan {
+        background-color: #C8E6C9;
+    }
+
+    /* Warna judul */
+    #boxUmum h3 {
+        background-color: #4DD0E1;
+    }
+    
+    #boxCinta h3 {
+        background-color: #F48FB1;
+    }
+
+    #boxKeuangan h3 {
+        background-color: #FFD54F;
+    }
+
+    #boxKesehatan h3 {
+        background-color: #81C784;
+    }
+
+    @media (max-width: 768px) {
+        .box-container {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .box {
+            width: 45%;
+            height: auto;
+            margin-bottom: 15px;
+        }
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="container" id="welcome">
+    <h1>Selamat Datang Di Ramalan Bintang!</h1>
+    <p>Mau tahu apa zodiak kamu dan ramalannya?</p>
+    <button class="button" onclick="showForm()">Yuk Mulai!</button>
+  </div>
+
+  <div class="form-container" id="form">
+    <h2>Ramalan Bintang Harian</h2>
+    <label for="nama">Nama kamu:</label>
+    <input type="text" id="nama" required>
+    <label for="tanggal">Tanggal Lahir:</label>
+    <input type="number" id="tanggal" min="1" max="31" required>
+    <label for="bulan">Bulan Lahir:</label>
+    <select id="bulan" required>
+      <option value="1">Januari</option>
+      <option value="2">Februari</option>
+      <option value="3">Maret</option>
+      <option value="4">April</option>
+      <option value="5">Mei</option>
+      <option value="6">Juni</option>
+      <option value="7">Juli</option>
+      <option value="8">Agustus</option>
+      <option value="9">September</option>
+      <option value="10">Oktober</option>
+      <option value="11">November</option>
+      <option value="12">Desember</option>
+    </select><br>
+    <button class="button" onclick="tampilkanRamalan()">Lihat Ramalan</button>
+  </div>
+
+  <div class="result-container" id="hasil">
+    <h2 id="hasil-nama">Halo, ...!!</h2>
+    <p id="hasil-zodiak">Zodiak kamu: ...</p>
+    <div class="box-container" id="hasilRamalan" style="display: none;">
+      <div class="box" id="boxUmum">
+        <h3>Umum</h3>
+        <p id="ramalanUmum"></p>
+      </div>
+      <div class="box" id="boxCinta">
+        <h3>Cinta</h3>
+        <p id="ramalanCinta"></p>
+      </div>
+      <div class="box" id="boxKeuangan">
+        <h3>Keuangan</h3>
+        <p id="ramalanKeuangan"></p>
+      </div>
+      <div class="box" id="boxKesehatan">
+        <h3>Kesehatan</h3>
+        <p id="ramalanKesehatan"></p>
+      </div>
+    </div>
+  </div>
+
+<script>
+function showForm() {
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('form').style.display = 'block';
+}
+
+function getZodiac(day, month) {
+  const zodiak = [
+    ["Capricorn", 20], ["Aquarius", 19], ["Pisces", 20],
+    ["Aries", 20], ["Taurus", 21], ["Gemini", 21],
+    ["Cancer", 23], ["Leo", 23], ["Virgo", 23],
+    ["Libra", 23], ["Scorpio", 22], ["Sagittarius", 22], ["Capricorn", 31]
+  ];
+  return day < zodiak[month - 1][1] ? zodiak[month - 1][0] : zodiak[month][0];
+}
+
+function tampilkanRamalan() {
+  const nama = document.getElementById("nama").value;
+  const tanggal = parseInt(document.getElementById("tanggal").value);
+  const bulan = parseInt(document.getElementById("bulan").value);
+  
+  if (!nama || !tanggal || !bulan || isNaN(tanggal) || isNaN(bulan)) {
+    alert("Mohon isi semua data dengan benar.")
+    return;
+  }
+
+  const zodiak = getZodiac(tanggal, bulan);
+  const ramalan = {
+    "Aries": { 
+        Umum: "Hari ini kamu dipenuhi energi dan semangat luar biasa. Ini adalah waktu yang tepat untuk memulai proyek baru atau menyelesaikan tugas yang tertunda. Jangan biarkan hal kecil mengganggu fokusmu.", 
+        Cinta: "Kejujuran akan jadi kunci hubungan hari ini. Jika kamu menyukai seseorang, jangan ragu mengungkapkan perasaanmu. Bagi yang sudah berpasangan, ciptakan momen sederhana tapi bermakna bersama.", 
+        Keuangan: "Peluang finansial terbuka, namun tetap berhati-hati dengan pengeluaran impulsif. Gunakan waktumu untuk meninjau kembali rencana keuangan jangka panjang.", 
+        Kesehatan: "Energi tinggi yang kamu miliki harus disalurkan dengan baik. Olahraga ringan dan pola tidur teratur bisa menjaga kondisi fisik dan mental tetap stabil." 
+    },
+    "Taurus": { 
+        Umum: "Ketenangan menjadi kekuatan utamamu hari ini. Kamu bisa menyelesaikan sesuatu dengan stabil dan rapi. Orang lain akan menghargai pendekatan sabar dan penuh perhitunganmu.",
+        Cinta: "Kamu dan pasanganmu bisa semakin dekat jika kamu menunjukkan kepedulian yang tulus. Jika sedang single, seseorang dari masa lalu mungkin muncul kembali.", 
+        Keuangan: "Hari ini cocok untuk menabung atau memulai rencana keuangan baru. Hindari membeli barang mahal secara spontan meski tergoda diskon.",
+        Kesehatan: "Perhatikan makanan yang kamu konsumsi, terutama jika kamu sering makan di luar. Tubuhmu butuh nutrisi seimbang agar tidak mudah lelah."
+    },
+    "Gemini": { 
+        Umum: "Hari ini kamu akan penuh dengan percakapan menarik dan ide kreatif. Gunakan kemampuan komunikasimu untuk memperluas koneksi dan memperkuat hubungan sosial.", 
+        Cinta: "Cinta bisa tumbuh dari komunikasi yang jujur dan terbuka. Ungkapkan isi hatimu tanpa ragu, baik kepada pasangan maupun orang yang kamu sukai.",
+        Keuangan: "Keuangan cukup stabil, tapi kamu harus tetap berhati-hati. Rencana pengeluaran kecil pun bisa jadi besar jika tidak dikontrol.",  
+        Kesehatan: "Kesehatan mental perlu perhatian. Hindari multitasking berlebihan dan ambil jeda untuk menenangkan pikiranmu sejenak."
+    },
+    "Cancer": { 
+        Umum: "Hari ini kamu cenderung lebih sensitif dan intuitif. Gunakan kepekaan ini untuk memperkuat hubungan dengan orang terdekat dan membuat keputusan yang lebih matang.", 
+        Cinta: "Perasaan lama bisa kembali muncul. Jika kamu sedang menjalin hubungan, luangkan waktu berkualitas untuk lebih memahami pasanganmu.",
+        Keuangan: "Jangan mudah tergoda investasi cepat untung. Fokus pada kestabilan dan keamanan keuangan lebih penting hari ini.", 
+        Kesehatan: "Luangkan waktu untuk merawat diri. Aktivitas seperti membaca, mendengarkan musik, atau berendam air hangat akan membuatmu lebih rileks."
+    },
+    "Leo": { 
+        Umum: "Kamu berada dalam sorotan hari ini! Gunakan pesonamu untuk memimpin sebuah tim atau menyelesaikan proyek yang sempat tertunda. Kesempatan tampil akan datang, manfaatkan dengan percaya diri.",  
+        Cinta: "Romantisme bisa muncul dari hal kecil. Kejutan sederhana bisa membuat pasangan merasa dihargai. Untuk yang single, ada kemungkinan gebetan mulai tertarik padamu.",
+        Keuangan: "Uang bukan masalah selama kamu bisa mengatur pengeluaran dengan bijak. Jangan terlalu dermawan kepada orang yang tidak bertanggung jawab.", 
+        Kesehatan: "Stamina kamu sedang baik. Jangan sia-siakan dengan pola hidup yang tidak sehat. Istirahat dan aktivitas fisik harus seimbang."
+    },
+    "Virgo": { 
+        Umum: "Kamu merasa lebih fokus dan perfeksionis dari biasanya. Hari ini cocok untuk menyusun ulang prioritas dan memperbaiki hal-hal kecil yang selama ini terlewat.",   
+        Cinta: "Cobalah untuk tidak terlalu mengkritik pasanganmu. Terlalu banyak menuntut bisa membuat hubungan menjadi tegang. Jadilah pendengar yang lebih baik.",
+        Keuangan: "Ada peluang untuk mendapatkan tambahan pemasukan dari pekerjaan sampingan atau ide kreatif. Gunakan waktumu dengan produktif.",
+        Kesehatan: "Jaga pola tidur dan hindari terlalu banyak menatap layar. Mata dan pikiranmu butuh istirahat yang cukup agar tetap segar."
+    },
+    "Libra": { 
+        Umum: "Keseimbangan adalah kata kunci hari ini. Kamu bisa menyelesaikan konflik dengan diplomatis dan menjadi penengah dalam situasi yang sulit.",
+        Cinta: "Hubungan terasa harmonis jika kamu menjaga komunikasi tetap terbuka. Untuk yang lajang, seseorang yang kamu anggap teman bisa mulai menunjukkan ketertarikan.", 
+        Keuangan: "Jangan membuat keputusan keuangan besar tanpa pertimbangan. Konsultasi dengan orang yang kamu percaya bisa membantumu membuat keputusan tepat.",
+        Kesehatan: "Cobalah aktivitas yang bisa memberikan keseimbangan tubuh dan pikiran, seperti yoga atau berjalan santai di alam terbuka."
+     },
+    "Scorpio": { 
+        Umum: "Hari ini kamu penuh misteri dan daya tarik. Tapi berhati-hatilah dengan emosi yang berlebihan. Gunakan intuisi untuk membuat keputusan penting.",
+        Cinta: "Gairah cinta meningkat, tapi kamu harus menahan diri agar tidak terlalu posesif. Kepercayaan menjadi dasar hubungan yang sehat.",
+        Keuangan: "Hari yang bagus untuk merencanakan investasi atau meninjau ulang tabungan. Gunakan kecermatanmu untuk melihat peluang tersembunyi.",
+        Kesehatan: "Mentalmu kuat, tapi jangan abaikan kesehatan fisik. Perbanyak minum air putih dan jangan lewatkan waktu makan."  
+    },
+    "Sagittarius": { 
+        Umum: "Kamu merasa bebas dan optimis hari ini. Gunakan energi ini untuk memulai petualangan baru atau belajar hal yang belum pernah kamu coba.", 
+        Cinta: "Cinta bisa datang dari arah yang tak terduga. Tetap terbuka dan jangan terlalu cepat menilai orang dari kesan pertama.", 
+        Keuangan: "Keuanganmu cukup stabil. Namun, perhatikan pengeluaran untuk perjalanan atau hiburan yang bisa membengkak.",
+        Kesehatan: "Aktivitas luar ruangan akan membuatmu merasa lebih hidup. Cobalah hiking atau sekadar jalan pagi untuk meningkatkan mood."  
+    },
+    "Capricorn": { 
+        Umum: "Kamu fokus dan disiplin hari ini. Hari yang tepat untuk menyusun ulang tujuan hidup dan mengejar impianmu dengan langkah realistis.",
+        Cinta: "Hubungan yang matang dan stabil menjadi fokusmu. Untuk yang single, kamu akan tertarik pada seseorang yang punya visi jangka panjang.",
+        Keuangan: "Kondisi finansialmu aman. Tapi kamu tetap harus cermat dan tidak terlalu kaku dalam mengambil keputusan bisnis atau pembelian besar.", 
+        Kesehatan: "Perhatikan kesehatan sendi dan punggung. Duduk terlalu lama bisa jadi masalah, jadi luangkan waktu untuk peregangan."
+    },
+    "Aquarius": { 
+        Umum: "Ide-ide segar bermunculan dalam kepalamu. Hari yang baik untuk kolaborasi dan diskusi kreatif. Orang lain akan menghargai cara berpikirmu yang out of the box.",  
+        Cinta: "Kamu mungkin merasa ingin lebih bebas dalam hubungan. Komunikasikan kebutuhan ini dengan jujur agar tidak menimbulkan salah paham.", 
+        Keuangan: "Kondisi keuangan cukup stabil. Kamu bisa mulai mencoba proyek sampingan atau donasi ke hal yang kamu pedulikan.",
+        Kesehatan: "Kesehatan mental jadi fokus. Cobalah journaling atau me-time agar tidak merasa terkuras secara emosional."
+    },
+    "Pisces": { 
+        Umum: "Hari ini kamu sangat intuitif dan penuh imajinasi. Gunakan sisi kreatifmu untuk mengekspresikan diri atau membantu orang lain yang sedang butuh dukungan.", 
+        Cinta: "Romansa terasa kuat. Kamu lebih peka terhadap pasangan. Untuk yang single, hari ini kamu bisa merasa tertarik pada orang yang punya kedalaman emosional.",
+        Keuangan: "Jangan mudah tergoda promosi atau diskon. Tahan keinginan untuk belanja impulsif, dan fokus pada kebutuhan utama.",
+        Kesehatan: "Emosi yang tidak stabil bisa memengaruhi kondisi fisik. Luangkan waktu untuk menyendiri dan menenangkan diri agar tetap seimbang."
+    }
+  };
+
+  const hasil = ramalan[zodiak];
+
+  if (!hasil) {
+    alert("Zodiak tidak ditemukan atau belum ada ramalannya.");
+    return;
+  }
+  
+  //tampilkan kotak ramalan
+  document.getElementById("hasilRamalan").style.display = "flex";
+
+  document.getElementById("form").style.display = "none";
+  document.getElementById("hasil").style.display = "block";
+  document.getElementById("hasil-nama").innerText = "Halo, " + nama + "!";
+  document.getElementById("hasil-zodiak").innerText = "Zodiak kamu: " + zodiak;
+  document.getElementById("ramalanUmum").innerText = hasil.Umum;
+  document.getElementById("ramalanCinta").innerText = hasil.Cinta;
+  document.getElementById("ramalanKeuangan").innerText = hasil.Keuangan;
+  document.getElementById("ramalanKesehatan").innerText = hasil.Kesehatan;
+}
+</script>
+</body>
+</html>
